@@ -5,7 +5,7 @@ local MessageDecodeErrors = {
 }
 
 local function makeMessageDecoderFunc()
-	local constants = require("cmp/cmp_constants")
+	local constants = require("./cmp_constants")
 	local PROTOCOL_VERSION_SIGNATURE = constants.PROTOCOL_VERSION_SIGNATURE
 	local HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE = constants.HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE
 	local HEADER_OFFSET_MESSAGE_TYPE = constants.HEADER_OFFSET_MESSAGE_TYPE
