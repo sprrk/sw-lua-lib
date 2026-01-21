@@ -10,7 +10,7 @@ local function makeMessageDecoderFunc()
 	local HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE = constants.HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE
 	local HEADER_OFFSET_MESSAGE_TYPE = constants.HEADER_OFFSET_MESSAGE_TYPE
 
-	---@param data CMPMessage
+	---@param data CMPMessage|CompositeData
 	---@return CompositeData|nil, CMPMessageType|nil, MessageDecodeError|nil
 	local function decodeMessage(data)
 		local floats = data.float_values
