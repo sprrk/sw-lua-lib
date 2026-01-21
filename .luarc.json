@@ -1,0 +1,12 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "Lua 5.2",
+  "workspace.library": [
+    "${3rd}/luassert/library",
+    "${3rd}/busted/library",
+    "${env:PATCHED_BUSTED_DEFS_PATH}/library",
+    "definitions/sw_component.lua",
+    "definitions/sw_microcontroller.lua"
+  ],
+  "hint.enable": false
+}
