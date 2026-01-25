@@ -45,7 +45,7 @@ local function CompositePublisher(writeFunc, queueSizeBits)
 	local prios = { queueHi, queueMid, queueLo }
 	local active = false
 
-	---@param data CompositeDataPartial
+	---@param data CompositeData|CompositeDataPartial
 	---@param prio 1|2|3
 	---@return boolean|nil,FIFOQueueError|nil
 	function instance:add(data, prio)
