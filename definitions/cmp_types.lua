@@ -8,6 +8,6 @@
 ---@field public [31] CMPMessageType
 ---@field public [32] CMPVersionSignature
 
----@class (exact) CMPMessage
+---@class (exact) CMPMessage: CompositeData
 ---@field public float_values CMPMessageFloatValues
 ---@field public bool_values CompositeBoolValues
