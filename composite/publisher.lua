@@ -1,4 +1,4 @@
-local FIFOQueue = require("./queue/fifo_queue").FIFOQueue
+local FIFOQueue = require("../queue/fifo_queue").FIFOQueue
 
 ---@alias CompositePublisherWriteFunc fun(data: CompositeData|CompositeDataPartial): any
 
