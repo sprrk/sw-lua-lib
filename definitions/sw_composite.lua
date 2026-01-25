@@ -71,3 +71,75 @@
 ---@class (exact) CompositeData
 ---@field public float_values CompositeFloatValues
 ---@field public bool_values CompositeBoolValues
+
+---@class (exact) CompositeFloatValuesPartial
+---@field public [1] number?
+---@field public [2] number?
+---@field public [3] number?
+---@field public [4] number?
+---@field public [5] number?
+---@field public [6] number?
+---@field public [7] number?
+---@field public [8] number?
+---@field public [9] number?
+---@field public [10] number?
+---@field public [11] number?
+---@field public [12] number?
+---@field public [13] number?
+---@field public [14] number?
+---@field public [15] number?
+---@field public [16] number?
+---@field public [17] number?
+---@field public [18] number?
+---@field public [19] number?
+---@field public [20] number?
+---@field public [21] number?
+---@field public [22] number?
+---@field public [23] number?
+---@field public [24] number?
+---@field public [25] number?
+---@field public [26] number?
+---@field public [27] number?
+---@field public [28] number?
+---@field public [29] number?
+---@field public [30] number?
+---@field public [31] number?
+---@field public [32] number?
+
+---@class (exact) CompositeBoolValuesPartial
+---@field public [1] boolean?
+---@field public [2] boolean?
+---@field public [3] boolean?
+---@field public [4] boolean?
+---@field public [5] boolean?
+---@field public [6] boolean?
+---@field public [7] boolean?
+---@field public [8] boolean?
+---@field public [9] boolean?
+---@field public [10] boolean?
+---@field public [11] boolean?
+---@field public [12] boolean?
+---@field public [13] boolean?
+---@field public [14] boolean?
+---@field public [15] boolean?
+---@field public [16] boolean?
+---@field public [17] boolean?
+---@field public [18] boolean?
+---@field public [19] boolean?
+---@field public [20] boolean?
+---@field public [21] boolean?
+---@field public [22] boolean?
+---@field public [23] boolean?
+---@field public [24] boolean?
+---@field public [25] boolean?
+---@field public [26] boolean?
+---@field public [27] boolean?
+---@field public [28] boolean?
+---@field public [29] boolean?
+---@field public [30] boolean?
+---@field public [31] boolean?
+---@field public [32] boolean?
+
+---@class (exact) CompositeDataPartial
+---@field public float_values CompositeFloatValuesPartial
+---@field public bool_values CompositeBoolValuesPartial
