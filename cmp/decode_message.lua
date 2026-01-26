@@ -27,8 +27,8 @@ local function makeMessageDecoderFunc()
 		---@cast data -CMPMessage, +CompositeData
 
 		-- Strip headers
-		data[HEADER_OFFSET_MESSAGE_TYPE] = 0
-		data[HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE] = 0
+		floats[HEADER_OFFSET_MESSAGE_TYPE] = 0
+		floats[HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE] = 0
 
 		return data, _messageType, nil
 	end
