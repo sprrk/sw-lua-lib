@@ -14,8 +14,9 @@ local _mapFields = require("./_map_fields")
 ---
 --- ---@type CompositeSchema
 --- local schema = {
---- 	floatFields = { foo = FloatField(1, { minFloat(2.12) }) },
---- 	boolFields = { bar = BoolField(1), buzz = BoolField(2) },
+--- 	foo = FloatField(1, { minFloat(2.12) }),
+--- 	bar = BoolField(1),
+--- 	buzz = BoolField(2),
 --- }
 ---
 --- -- Define a simple class for an object:
@@ -36,26 +37,20 @@ local _mapFields = require("./_map_fields")
 --- local data = serialize(obj)
 ---
 local function makeSerializerFunc(schema)
-	---@param fieldMap CompositeSchemaFloatFieldMapping
-	---@return fun(obj: table): CompositeFloatValues
-	---@overload fun(fieldMap: CompositeSchemaBoolFieldMapping): fun(obj: table): CompositeBoolValues
-	local function _makeParser(fieldMap)
-		local indices, names, actions, nIndices = fieldMap[1], fieldMap[2], fieldMap[3], fieldMap[4]
-		return function(obj)
-			local result = {}
-			for k = 1, nIndices do
-				local value, action = obj[names[k]], actions[k]
-				result[indices[k]] = action and action(value) or value
-			end
-			return result
-		end
-	end
+	---@type CompositeSchemaFieldMapping
+	local fieldMap = _mapFields(schema)
 
-	local _parseFloats = _makeParser(_mapFields(schema.floatFields))
-	local _parseBools = _makeParser(_mapFields(schema.boolFields))
+	local indices, names, types, actions, nIndices = fieldMap[1], fieldMap[2], fieldMap[3], fieldMap[4], fieldMap[5]
 
+	---@param obj table
+	---@return CompositeData
 	return function(obj)
-		return { float_values = _parseFloats(obj), bool_values = _parseBools(obj) }
+		local result = { float_values = {}, bool_values = {} }
+		for k = 1, nIndices do
+			local value, action = obj[names[k]], actions[k]
+			result[types[k]][indices[k]] = action and action(value) or value
+		end
+		return result
 	end
 end
 

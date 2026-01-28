@@ -20,8 +20,9 @@ local _mapFields = require("./_map_fields")
 ---
 --- ---@type CompositeSchema
 --- local schema = {
---- 	floatFields = { foo = FloatField(1, { minFloat(2.12) }) },
---- 	boolFields = { bar = BoolField(1), buzz = BoolField(2) },
+--- 	foo = FloatField(1, { minFloat(2.12) }),
+--- 	bar = BoolField(1),
+--- 	buzz = BoolField(2),
 --- }
 ---
 --- -- Create the deserializer function:
@@ -32,27 +33,20 @@ local _mapFields = require("./_map_fields")
 --- local obj = deserialize({ float_values = { [1] = 2.2 }, bool_values = { [1] = true, [2] = true } })
 ---
 local function makeDeserializerFunc(schema)
-	---@param fieldMap CompositeSchemaFloatFieldMapping
-	---@return fun(target: table, values: CompositeFloatValues)
-	---@overload fun(fieldMap: CompositeSchemaBoolFieldMapping): fun(target: table, values: CompositeBoolValues)
-	local function _makeFiller(fieldMap)
-		local indices, names, actions, nIndices = fieldMap[1], fieldMap[2], fieldMap[3], fieldMap[4]
-		return function(target, values)
-			for k = 1, nIndices do
-				local value, action = values[indices[k]], actions[k]
-				target[names[k]] = action and action(value) or value
-			end
-		end
-	end
+	---@type CompositeSchemaFieldMapping
+	local fieldMap = _mapFields(schema)
 
-	local _fillFloats = _makeFiller(_mapFields(schema.floatFields))
-	local _fillBools = _makeFiller(_mapFields(schema.boolFields))
+	local indices, names, types, actions, nIndices = fieldMap[1], fieldMap[2], fieldMap[3], fieldMap[4], fieldMap[5]
 
+	---@param data CompositeData
+	---@return table
 	return function(data)
-		local result = {}
-		_fillFloats(result, data.float_values)
-		_fillBools(result, data.bool_values)
-		return result
+		local obj = {}
+		for k = 1, nIndices do
+			local value, action = data[types[k]][indices[k]], actions[k]
+			obj[names[k]] = action and action(value) or value
+		end
+		return obj
 	end
 end
 
