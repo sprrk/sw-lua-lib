@@ -23,3 +23,18 @@ function output.setBool(index, value) end
 ---@param value number
 ---@return nil
 function output.setNumber(index, value) end
+
+---@table property
+property = {}
+
+---@param label string
+---@return boolean
+function property.getBool(label) end
+
+---@param label string
+---@return number
+function property.getNumber(label) end
+
+---@param label string
+---@return string
+function property.getText(label) end
