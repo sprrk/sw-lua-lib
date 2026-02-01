@@ -1,6 +1,7 @@
 ---@meta
 
 ---@param tick_time number
+---@return nil
 function onTick(tick_time) end
 
 ---@table component
@@ -12,8 +13,10 @@ component = {}
 ---@return number, boolean
 function component.slotTorqueApplyMomentum(index, mass, rps) end
 
+---@return nil
 function onRemoveFromSimulation() end
 
+---@return nil
 function onRender() end
 
 ---@alias Matrix table
