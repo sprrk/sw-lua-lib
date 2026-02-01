@@ -45,10 +45,16 @@ local function CompositePublisher(writeFunc, queueSizeBits)
 	local prios = { queueHi, queueMid, queueLo }
 	local active = false
 
+	---@return boolean active True if any data is queued; False if queues are empty
+	function instance:isActive()
+		return active
+	end
+
 	---@param data CompositeData|CompositeDataPartial
 	---@param prio 1|2|3
 	---@return boolean|nil,FIFOQueueError|nil
 	function instance:add(data, prio)
+		active = true
 		return prios[prio]:add(data)
 	end
 
