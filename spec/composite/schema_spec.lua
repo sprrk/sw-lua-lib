@@ -165,4 +165,66 @@ describe("CompositeSchema", function()
 		assert.equals(5, obj.buzz)
 		assert.equals(42, obj.nestedA.nestedB.fuzz)
 	end)
+
+	it("serializes nested schemas with offsets", function()
+		local nestedFields = {
+			bar = FloatField(1, { maxFloat(5) }),
+			baz = FloatField(2, { minFloat(3), maxFloat(5) }),
+			nestedB = CompositeSchema({ fuzz = FloatField(3) }),
+		}
+
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = CompositeSchema(nestedFields, 2),
+			buzz = FloatField(5, { minFloat(3), maxFloat(6.42) }),
+			nestedB = CompositeSchema(nestedFields, 6),
+		})
+
+		local obj = {
+			foo = 1.2,
+			nestedA = { bar = 7, baz = 2.4, nestedB = { fuzz = 42 } },
+			nestedB = { bar = 0.25, baz = 3.4, nestedB = { fuzz = 27 } },
+			buzz = 8.1,
+		}
+		local data = schema:serialize(obj)
+
+		assert.equals(2, data.float_values[1]) -- obj.foo
+		assert.equals(5, data.float_values[2]) -- obj.nestedA.bar
+		assert.equals(3, data.float_values[3]) -- obj.nestedA.baz
+		assert.equals(42, data.float_values[4]) -- obj.nestedA.nestedB.fuzz
+		assert.equals(6.42, data.float_values[5]) -- obj.buzz
+		assert.equals(0.25, data.float_values[6]) -- obj.nestedB.bar
+		assert.equals(3.4, data.float_values[7]) -- obj.nestedB.baz
+		assert.equals(27, data.float_values[8]) -- obj.nestedB.nestedB.fuzz
+	end)
+
+	it("deserializes nested schemas with offsets", function()
+		local nestedFields = {
+			bar = FloatField(1, { maxFloat(5) }),
+			baz = FloatField(2, { minFloat(3), maxFloat(5) }),
+			nestedB = CompositeSchema({ fuzz = FloatField(3) }),
+		}
+
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = CompositeSchema(nestedFields, 2),
+			buzz = FloatField(5, { minFloat(3), maxFloat(6.42) }),
+			nestedB = CompositeSchema(nestedFields, 6),
+		})
+
+		local data = {
+			float_values = { [1] = 1.2, [2] = 7, [3] = 2.4, [4] = 42, [5] = 8.1, [6] = 0.25, [7] = 3.4, [8] = 27 },
+			bool_values = {},
+		}
+		local obj = schema:deserialize(data)
+
+		assert.equals(2, obj.foo)
+		assert.equals(5, obj.nestedA.bar)
+		assert.equals(3, obj.nestedA.baz)
+		assert.equals(42, obj.nestedA.nestedB.fuzz)
+		assert.equals(6.42, obj.buzz)
+		assert.equals(0.25, obj.nestedB.bar)
+		assert.equals(3.4, obj.nestedB.baz)
+		assert.equals(27, obj.nestedB.nestedB.fuzz)
+	end)
 end)

@@ -17,9 +17,10 @@ end
 ---@class (exact) CompositeSchema<T>
 ---@field type "schema"
 ---@field serialize fun(self, obj: T): CompositeData
----@field deserialize fun(self, data: CompositeData): T
+---@field deserialize fun(self, data: CompositeData, baseOffset: integer?): T
 
 ---@param fields table<string, CompositeSchemaFloatField|CompositeSchemaBoolField|CompositeSchema>
+---@param startIndex integer? Optional start index (offset)
 ---@return CompositeSchema
 ---
 --- Example usage:
@@ -51,7 +52,10 @@ end
 ---
 --- -- Note: Check the tests for more complex examples (schema nesting, etc.).
 ---
-local function CompositeSchema(fields)
+local function CompositeSchema(fields, startIndex)
+	startIndex = math.max((startIndex or 1), 1)
+	local offset = startIndex - 1
+
 	---@class CompositeSchema
 	local instance = { type = "schema" }
 
@@ -62,23 +66,24 @@ local function CompositeSchema(fields)
 				-- Recursively serialize nested schemas and merge into our result
 				for key, values in pairs(field:serialize(obj[name])) do
 					for index, value in pairs(values) do
-						result[key][index] = value
+						result[key][index + offset] = value
 					end
 				end
 			else
-				result[field.type][field.i] = _parse(obj[name], field)
+				result[field.type][field.i + offset] = _parse(obj[name], field)
 			end
 		end
 		return result
 	end
 
-	function instance:deserialize(data)
+	function instance:deserialize(data, baseOffset)
+		local actualOffset = (baseOffset or 0) + offset
 		local obj = {}
 		for name, field in pairs(fields) do
 			if field.type == "schema" then
-				obj[name] = field:deserialize(data)
+				obj[name] = field:deserialize(data, actualOffset)
 			else
-				obj[name] = _parse(data[field.type][field.i], field)
+				obj[name] = _parse(data[field.type][field.i + actualOffset], field)
 			end
 		end
 		return obj
