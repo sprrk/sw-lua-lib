@@ -12,13 +12,14 @@ local function _parse(value, field)
 	return value
 end
 
+---@class (exact) CompositeSchemaFields: table<string, CompositeSchemaFloatField|CompositeSchemaBoolField>
+
 ---@class (exact) CompositeSchema<T>
+---@field type "schema"
 ---@field serialize fun(self, obj: T): CompositeData
 ---@field deserialize fun(self, data: CompositeData): T
 
----@class (exact) CompositeSchemaFields: table<string, CompositeSchemaFloatField|CompositeSchemaBoolField>
-
----@param fields CompositeSchemaFields
+---@param fields table<string, CompositeSchemaFloatField|CompositeSchemaBoolField|CompositeSchema>
 ---@return CompositeSchema
 ---
 --- Example usage:
@@ -48,14 +49,25 @@ end
 --- -- Deserialize the composite data back into our object:
 --- local obj = schema:deserialize(data)
 ---
+--- -- Note: Check the tests for more complex examples (schema nesting, etc.).
+---
 local function CompositeSchema(fields)
 	---@class CompositeSchema
-	local instance = {}
+	local instance = { type = "schema" }
 
 	function instance:serialize(obj)
 		local result = { float_values = {}, bool_values = {} }
 		for name, field in pairs(fields) do
-			result[field.type][field.i] = _parse(obj[name], field)
+			if field.type == "schema" then
+				-- Recursively serialize nested schemas and merge into our result
+				for key, values in pairs(field:serialize(obj[name])) do
+					for index, value in pairs(values) do
+						result[key][index] = value
+					end
+				end
+			else
+				result[field.type][field.i] = _parse(obj[name], field)
+			end
 		end
 		return result
 	end
@@ -63,7 +75,11 @@ local function CompositeSchema(fields)
 	function instance:deserialize(data)
 		local obj = {}
 		for name, field in pairs(fields) do
-			obj[name] = _parse(data[field.type][field.i], field)
+			if field.type == "schema" then
+				obj[name] = field:deserialize(data)
+			else
+				obj[name] = _parse(data[field.type][field.i], field)
+			end
 		end
 		return obj
 	end

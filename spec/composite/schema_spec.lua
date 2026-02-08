@@ -81,4 +81,88 @@ describe("CompositeSchema", function()
 		assert.equals(3, obj.baz)
 		assert.equals(5, obj.buzz)
 	end)
+
+	it("can serialize nested schemas 1 level deep", function()
+		local nestedA = CompositeSchema({
+			bar = FloatField(2, { maxFloat(5) }),
+			baz = FloatField(3, { minFloat(3), maxFloat(5) }),
+		})
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = nestedA,
+			buzz = FloatField(4, { minFloat(3), maxFloat(5) }),
+		})
+
+		local obj = { foo = 1.2, nestedA = { bar = 7, baz = 2.4 }, buzz = 8.1 }
+		local data = schema:serialize(obj)
+
+		assert.equals(2, data.float_values[1])
+		assert.equals(5, data.float_values[2])
+		assert.equals(3, data.float_values[3])
+		assert.equals(5, data.float_values[4])
+	end)
+
+	it("can deserialize nested schemas 1 level deep", function()
+		local nestedA = CompositeSchema({
+			bar = FloatField(2, { maxFloat(5) }),
+			baz = FloatField(3, { minFloat(3), maxFloat(5) }),
+		})
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = nestedA,
+			buzz = FloatField(4, { minFloat(3), maxFloat(5) }),
+		})
+
+		local data = { float_values = { [1] = 1.2, [2] = 7, [3] = 2.4, [4] = 8.1 } }
+		local obj = schema:deserialize(data)
+
+		assert.equals(2, obj.foo)
+		assert.equals(5, obj.nestedA.bar)
+		assert.equals(3, obj.nestedA.baz)
+		assert.equals(5, obj.buzz)
+	end)
+
+	it("can serialize nested schemas 2 levels deep", function()
+		local nestedA = CompositeSchema({
+			bar = FloatField(2, { maxFloat(5) }),
+			baz = FloatField(3, { minFloat(3), maxFloat(5) }),
+			nestedB = CompositeSchema({ fuzz = FloatField(6) }),
+		})
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = nestedA,
+			buzz = FloatField(4, { minFloat(3), maxFloat(5) }),
+		})
+
+		local obj = { foo = 1.2, nestedA = { bar = 7, baz = 2.4, nestedB = { fuzz = 42 } }, buzz = 8.1 }
+		local data = schema:serialize(obj)
+
+		assert.equals(2, data.float_values[1])
+		assert.equals(5, data.float_values[2])
+		assert.equals(3, data.float_values[3])
+		assert.equals(5, data.float_values[4])
+		assert.equals(42, data.float_values[6])
+	end)
+
+	it("can deserialize nested schemas 2 levels deep", function()
+		local nestedA = CompositeSchema({
+			bar = FloatField(2, { maxFloat(5) }),
+			baz = FloatField(3, { minFloat(3), maxFloat(5) }),
+			nestedB = CompositeSchema({ fuzz = FloatField(6) }),
+		})
+		local schema = CompositeSchema({
+			foo = FloatField(1, { minFloat(2) }),
+			nestedA = nestedA,
+			buzz = FloatField(4, { minFloat(3), maxFloat(5) }),
+		})
+
+		local data = { float_values = { [1] = 1.2, [2] = 7, [3] = 2.4, [4] = 8.1, [6] = 42 } }
+		local obj = schema:deserialize(data)
+
+		assert.equals(2, obj.foo)
+		assert.equals(5, obj.nestedA.bar)
+		assert.equals(3, obj.nestedA.baz)
+		assert.equals(5, obj.buzz)
+		assert.equals(42, obj.nestedA.nestedB.fuzz)
+	end)
 end)
