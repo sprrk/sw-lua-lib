@@ -16,6 +16,7 @@ end
 
 ---@class (exact) CompositeSchema<T>
 ---@field type "schema"
+---@field fields CompositeSchemaFields
 ---@field serialize fun(self, obj: T): CompositeData
 ---@field deserialize fun(self, data: CompositeData, baseOffset: integer?): T
 
@@ -57,7 +58,7 @@ local function CompositeSchema(fields, startIndex)
 	local offset = startIndex - 1
 
 	---@class CompositeSchema
-	local instance = { type = "schema" }
+	local instance = { type = "schema", fields = fields }
 
 	function instance:serialize(obj)
 		local result = { float_values = {}, bool_values = {} }
