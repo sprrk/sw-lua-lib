@@ -1,8 +1,8 @@
 local makeDeserializerFunc = require("composite/deserializer")
-local FloatField = require("composite/schema_fields").FloatField
-local BoolField = require("composite/schema_fields").BoolField
-local minFloat = require("composite/schema_field_validators").minFloat
-local maxFloat = require("composite/schema_field_validators").maxFloat
+local FloatField = require("composite/schema/fields/float_field")
+local BoolField = require("composite/schema/fields/bool_field")
+local minFloat = require("composite/schema/field_validators/min_float")
+local maxFloat = require("composite/schema/field_validators/max_float")
 
 describe("deserializer", function()
 	it("deserializes composite data to objects", function()
