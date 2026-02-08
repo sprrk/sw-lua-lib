@@ -12,5 +12,3 @@
 ---@field i integer The field index
 ---@field type `bool_values` The target/type inside the CompositeData table
 ---@field validators CompositeSchemaBoolFieldValidator[]?
-
----@class (exact) CompositeSchema: table<string, CompositeSchemaFloatField|CompositeSchemaBoolField>
