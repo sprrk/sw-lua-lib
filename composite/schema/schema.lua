@@ -2,6 +2,8 @@
 ---@param field CompositeSchemaFloatField
 ---@return number
 ---@overload fun(value: boolean, field: CompositeSchemaBoolField): boolean
+---@overload fun(value: integer, field: CompositeSchemaAscii3Field): string
+---@overload fun(value: string, field: CompositeSchemaAscii3Field): integer
 local function _parse(value, field)
 	local validators = field.validators
 	if validators then
@@ -12,7 +14,7 @@ local function _parse(value, field)
 	return value
 end
 
----@class (exact) CompositeSchemaFields: table<string, CompositeSchemaFloatField|CompositeSchemaBoolField>
+---@class (exact) CompositeSchemaFields: table<string, CompositeSchemaFloatField|CompositeSchemaBoolField|CompositeSchemaAscii3Field>
 
 ---@class (exact) CompositeSchema<T>
 ---@field type "schema"
@@ -20,7 +22,7 @@ end
 ---@field serialize fun(self, obj: T): CompositeData
 ---@field deserialize fun(self, data: CompositeData, baseOffset: integer?): T
 
----@param fields table<string, CompositeSchemaFloatField|CompositeSchemaBoolField|CompositeSchema>
+---@param fields table<string, CompositeSchemaFloatField|CompositeSchemaBoolField|CompositeSchemaAscii3Field|CompositeSchema>
 ---@param startIndex integer? Optional start index (offset)
 ---@return CompositeSchema
 ---
@@ -36,17 +38,18 @@ end
 --- local minFloat = require("./schema/field_validators/min_float")
 --- local FloatField = require("./schema/fields/float_field")
 --- local BoolField = require("./schema/fields/bool_field")
+--- local Ascii3Field = require("./schema/fields/ascii3_field")
 ---
 --- ---@type CompositeSchema<TestObj>
---- local schema = CompositeSchema({ foo = FloatField(1), bar = BoolField(1), buzz = BoolField(2) })
+--- local schema = CompositeSchema({ foo = FloatField(1), bar = BoolField(1), buzz = BoolField(2), text = Ascii3Field(2) })
 ---
 --- -- Create our object:
 --- ---@type TestObj
---- local testObj = { foo = 2.1, bar = true, buzz = true }
+--- local testObj = { foo = 2.1, bar = true, buzz = true, text = "abc" }
 ---
 --- -- Serialize the object into composite data:
 --- local data = schema:serialize(testObj)
---- -- Result: { float_values = { [1] = 2.2 }, bool_values = { [1] = true, [2] = true } }
+--- -- Result: { float_values = { [1] = 2.2, [2] = 6382179 }, bool_values = { [1] = true, [2] = true } }
 ---
 --- -- Deserialize the composite data back into our object:
 --- local obj = schema:deserialize(data)
