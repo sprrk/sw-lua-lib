@@ -1,3 +1,5 @@
+local signVersion = require("./sign_cmp_version")
+
 local PROTOCOL_VERSION = 1
 
 ---@class (exact) CMPConstants
@@ -7,7 +9,7 @@ local PROTOCOL_VERSION = 1
 ---@field HEADER_OFFSET_MESSAGE_TYPE integer
 local CONSTANTS = {
 	PROTOCOL_VERSION = PROTOCOL_VERSION,
-	PROTOCOL_VERSION_SIGNATURE = (PROTOCOL_VERSION * 0x9E3779 + 0x2D), -- scramble: version * 24 bit ratio + offset
+	PROTOCOL_VERSION_SIGNATURE = signVersion(PROTOCOL_VERSION),
 	HEADER_OFFSET_MESSAGE_TYPE = 31,
 	HEADER_OFFSET_PROTOCOL_VERSION_SIGNATURE = 32,
 }
